@@ -13,6 +13,10 @@
 		A50A30111CD45CA400ED505F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A50A30101CD45CA400ED505F /* Assets.xcassets */; };
 		A50A30141CD45CA400ED505F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A50A30121CD45CA400ED505F /* LaunchScreen.storyboard */; };
 		A50A301F1CD45CA500ED505F /* FoodCriticTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50A301E1CD45CA500ED505F /* FoodCriticTests.swift */; };
+		A50A302A1CD460CD00ED505F /* Meal.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50A30291CD460CD00ED505F /* Meal.swift */; };
+		A50A302C1CD4636C00ED505F /* MealTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50A302B1CD4636C00ED505F /* MealTableViewCell.swift */; };
+		A50A302E1CD4651C00ED505F /* MealTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50A302D1CD4651C00ED505F /* MealTableViewController.swift */; };
+		A50A30301CD4656600ED505F /* RatingClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50A302F1CD4656600ED505F /* RatingClass.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +40,10 @@
 		A50A301A1CD45CA500ED505F /* FoodCriticTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FoodCriticTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A50A301E1CD45CA500ED505F /* FoodCriticTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodCriticTests.swift; sourceTree = "<group>"; };
 		A50A30201CD45CA500ED505F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A50A30291CD460CD00ED505F /* Meal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Meal.swift; sourceTree = "<group>"; };
+		A50A302B1CD4636C00ED505F /* MealTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MealTableViewCell.swift; sourceTree = "<group>"; };
+		A50A302D1CD4651C00ED505F /* MealTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MealTableViewController.swift; sourceTree = "<group>"; };
+		A50A302F1CD4656600ED505F /* RatingClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RatingClass.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,7 +87,11 @@
 			children = (
 				A50A30091CD45CA400ED505F /* AppDelegate.swift */,
 				A50A300B1CD45CA400ED505F /* ViewController.swift */,
+				A50A30291CD460CD00ED505F /* Meal.swift */,
+				A50A302B1CD4636C00ED505F /* MealTableViewCell.swift */,
 				A50A300D1CD45CA400ED505F /* Main.storyboard */,
+				A50A302D1CD4651C00ED505F /* MealTableViewController.swift */,
+				A50A302F1CD4656600ED505F /* RatingClass.swift */,
 				A50A30101CD45CA400ED505F /* Assets.xcassets */,
 				A50A30121CD45CA400ED505F /* LaunchScreen.storyboard */,
 				A50A30151CD45CA400ED505F /* Info.plist */,
@@ -199,8 +211,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A50A302E1CD4651C00ED505F /* MealTableViewController.swift in Sources */,
+				A50A302C1CD4636C00ED505F /* MealTableViewCell.swift in Sources */,
 				A50A300C1CD45CA400ED505F /* ViewController.swift in Sources */,
+				A50A302A1CD460CD00ED505F /* Meal.swift in Sources */,
 				A50A300A1CD45CA400ED505F /* AppDelegate.swift in Sources */,
+				A50A30301CD4656600ED505F /* RatingClass.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -329,6 +345,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = FoodCritic/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.FoodCritic;
@@ -340,6 +357,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = FoodCritic/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.FoodCritic;
@@ -390,6 +408,7 @@
 				A50A30251CD45CA500ED505F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		A50A30261CD45CA500ED505F /* Build configuration list for PBXNativeTarget "FoodCriticTests" */ = {
 			isa = XCConfigurationList;
@@ -398,6 +417,7 @@
 				A50A30281CD45CA500ED505F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
