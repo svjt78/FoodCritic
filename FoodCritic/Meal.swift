@@ -11,11 +11,13 @@ import UIKit
 class Meal: NSObject, NSCoding {
     // MARK: Properties
     
-    var name: String
+    var mealID: Int
+    var name: String?
     var photo: UIImage?
     var rating: Int
     
     struct PropertyKey {
+        static let IDKey = "ID"
         static let nameKey = "name"
         static let photoKey = "photo"
         static let ratingKey = "rating"
@@ -29,6 +31,7 @@ class Meal: NSObject, NSCoding {
     //Mark NSCoding
     
     func encodeWithCoder(aCoder: NSCoder) {
+        aCoder.encodeObject(mealID, forKey: PropertyKey.IDKey)
         aCoder.encodeObject(name, forKey: PropertyKey.nameKey)
         aCoder.encodeObject(photo, forKey: PropertyKey.photoKey)
         aCoder.encodeInteger(rating, forKey: PropertyKey.ratingKey)
@@ -37,6 +40,9 @@ class Meal: NSObject, NSCoding {
     
     //Mark Convenience Init
     required convenience init?(coder aDecoder: NSCoder) {
+        
+        let mealID = aDecoder.decodeObjectForKey(PropertyKey.IDKey) as! Int
+        
         let name = aDecoder.decodeObjectForKey(PropertyKey.nameKey) as! String
         
         // Because photo is an optional property of Meal, use conditional cast.
@@ -45,14 +51,15 @@ class Meal: NSObject, NSCoding {
         let rating = aDecoder.decodeIntegerForKey(PropertyKey.ratingKey)
         
         // Must call designated initializer.
-        self.init(name: name, photo: photo, rating: rating)
+        self.init(mealID: mealID, name: name, photo: photo, rating: rating)
     }
     
     
     // MARK: Initialization
     
-    init?(name: String, photo: UIImage?, rating: Int) {
+    init?(mealID: Int, name: String, photo: UIImage?, rating: Int) {
         // Initialize stored properties.
+        self.mealID = mealID
         self.name = name
         self.photo = photo
         self.rating = rating

@@ -14,6 +14,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITextFieldDelegate
     // Mark properties
     //   @IBOutlet weak var mealLabel: UILabel!
     
+    @IBOutlet weak var mealID: UITextField!
     @IBOutlet weak var mealtextField: UITextField!
     
     //    @IBOutlet weak var defaultButton: UIButton!
@@ -62,10 +63,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITextFieldDelegate
         
         // Set up views if editing an existing Meal.
         if let meal = meal {
+            mealID.text = String(meal.mealID)
             navigationItem.title = meal.name
             mealtextField.text   = meal.name
             mealImage.image = meal.photo
             ratingClass.rating = meal.rating
+            
+        }else{
+        mealID.text = "1"
         }
         
         checkValidMealName()
@@ -248,13 +253,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITextFieldDelegate
     // This method lets you configure a view controller before it's presented.
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if saveMeal === sender {
+            let mealItemId: Int = Int(mealID.text!)!
             let name = mealtextField.text ?? ""
             let photo = mealImage.image
             let rating = ratingClass.rating
             
             
             // Set the meal to be passed to MealTableViewController after the unwind segue.
-            meal = Meal(name: name, photo: photo, rating: rating)
+            meal = Meal(mealID:mealItemId, name: name, photo: photo, rating: rating)
         }
         
     }

@@ -12,6 +12,9 @@ class MealTableViewCell: UITableViewCell {
     
     //Mark properties
     
+    
+    @IBOutlet weak var mealID: UITextField!
+    
     @IBOutlet weak var nameLabel: UILabel!
     
     @IBOutlet weak var foodImage: UIImageView!

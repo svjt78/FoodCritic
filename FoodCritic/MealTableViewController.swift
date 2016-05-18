@@ -15,10 +15,30 @@ class MealTableViewController: UITableViewController {
     
     var meals = [Meal]()
     
+    var mealDB: FMDatabase = FMDatabase()
     
     var currentSelection: Int = 0
     //   self.property (nonatomic) currentSelection;
     
+        // MARK: Initialization
+/*
+    init?(meals: [Meal] ,mealDB: FMDatabase, currentSelection: Int) {
+        self.meals = meals
+        self.mealDB = mealDB
+        self.currentSelection = currentSelection
+        
+        super.init(style: .Plain)
+        
+    }
+    */
+    required init(coder decoder: NSCoder) {
+        super.init(coder: decoder)!
+    }
+/*
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+   */ 
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -36,14 +56,20 @@ class MealTableViewController: UITableViewController {
         //sentinel
         self.currentSelection = -1;
         
+        let mdm: MealDataManager =  MealDataManager()
+         mealDB = mdm.MealDatabaseSetUp()
+        meals = mdm.loadMealData(mealDB)
+        
+        /*
         // Load any saved meals, otherwise load sample data.
         if let savedMeals = loadMeals() {
             meals += savedMeals
         } else {
             // Load the sample data.
             loadSampleMeals()
-        }
+        } */
     }
+    /*
     
     func loadSampleMeals() {
         
@@ -62,7 +88,16 @@ class MealTableViewController: UITableViewController {
         meals += [meal1, meal2, meal3, meal4]
         
     }
+    */
     
+    
+    override func viewWillAppear(animated: Bool) {
+    
+        super.viewWillAppear(animated)
+        
+        tableView .reloadData()
+        
+    }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -96,6 +131,7 @@ class MealTableViewController: UITableViewController {
         // Fetches the appropriate meal for the data source layout.
         let meal = meals[indexPath.row]
         
+        cell.mealID.text = String(meal.mealID)
         cell.nameLabel.text = meal.name
         cell.foodImage.image = meal.photo
         cell.mealRating.rating = meal.rating
@@ -143,20 +179,64 @@ class MealTableViewController: UITableViewController {
         if let sourceViewController = sender.sourceViewController as? ViewController, meal = sourceViewController.meal {
             
             if let selectedIndexPath = tableView.indexPathForSelectedRow {
-                // Update an existing meal.
-                meals[selectedIndexPath.row] = meal
-                tableView.reloadRowsAtIndexPaths([selectedIndexPath], withRowAnimation: .None)
+           // Update an existing meal.
+                let mdm: MealDataManager = MealDataManager()
+                let response: ActionResponse = mdm.updateMealData(mealDB, meal: meal)
+                
+                if (response.responseCode) == "Y" {
+                    
+                    let alertController = UIAlertController(title: "Alert!", message: response.responseDesc, preferredStyle: .Alert)
+                    
+                    let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+                    alertController.addAction(defaultAction)
+                    
+                    let alertWindow = UIWindow(frame: UIScreen.mainScreen().bounds)
+                    alertWindow.rootViewController = UIViewController()
+                    alertWindow.windowLevel = UIWindowLevelAlert + 1;
+                    alertWindow.makeKeyAndVisible()
+                    
+                    alertWindow.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
+                    
+                }else {
+                    meals = mdm.loadMealData(mealDB)
+                }
+//                meals[selectedIndexPath.row] = meal
+//                tableView.reloadRowsAtIndexPaths([selectedIndexPath], withRowAnimation: .None)
             }
             else {
                 // Add a new meal.
-                let newIndexPath = NSIndexPath(forRow: meals.count, inSection: 0)
                 
-                meals.append(meal)
+                let mdm: MealDataManager = MealDataManager()
+                let response: ActionResponse = mdm.SaveMealData(mealDB, meal: meal)
                 
-                tableView.insertRowsAtIndexPaths([newIndexPath], withRowAnimation: .Bottom)
+                if (response.responseCode) == "y" {
+                    
+                    let alertController = UIAlertController(title: "Alert!", message: "Meal is not added", preferredStyle: .Alert)
+                    
+                    let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+                    alertController.addAction(defaultAction)
+                    
+                    let alertWindow = UIWindow(frame: UIScreen.mainScreen().bounds)
+                    alertWindow.rootViewController = UIViewController()
+                    alertWindow.windowLevel = UIWindowLevelAlert + 1;
+                    alertWindow.makeKeyAndVisible()
+                    
+                    alertWindow.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
+                    
+                    
+                }else {
+                   meals = mdm.loadMealData(mealDB)
+                    
+                }
+                
+ //               let newIndexPath = NSIndexPath(forRow: meals.count, inSection: 0)
+                
+ //               meals.append(meal)
+                
+//                tableView.insertRowsAtIndexPaths([newIndexPath], withRowAnimation: .Bottom)
             }
             // Save the meals.
-            saveMeals()
+//            saveMeals()
         }
     }
     
@@ -189,10 +269,37 @@ class MealTableViewController: UITableViewController {
     // Override to support editing the table view.
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
+            let mdm: MealDataManager = MealDataManager()
+            let mealItem = meals[indexPath.row]
+            let response: ActionResponse = mdm.deleteMealData(mealDB, meal: mealItem)
+            if (response.responseCode) == "y" {
+                
+                let alertController = UIAlertController(title: "Alert!", message: "Meal is not deleted", preferredStyle: .Alert)
+                
+                let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+                alertController.addAction(defaultAction)
+                
+                let alertWindow = UIWindow(frame: UIScreen.mainScreen().bounds)
+                alertWindow.rootViewController = UIViewController()
+                alertWindow.windowLevel = UIWindowLevelAlert + 1;
+                alertWindow.makeKeyAndVisible()
+                
+                alertWindow.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
+            
+                
+            }else {
+                meals.removeAtIndex(indexPath.row)
+                tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+                meals = mdm.loadMealData(mealDB)
+                
+            }
+
+ /*
             // Delete the row from the data source
             meals.removeAtIndex(indexPath.row)
             saveMeals()
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+ */
             
         } else if editingStyle == .Insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view

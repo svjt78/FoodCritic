@@ -3,6 +3,8 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
+        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -45,8 +47,14 @@
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="aQJ-F5-4pf">
+                                            <rect key="frame" x="555" y="0.0" width="39" height="30"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                            <textInputTraits key="textInputTraits"/>
+                                        </textField>
                                     </subviews>
                                     <constraints>
+                                        <constraint firstItem="aQJ-F5-4pf" firstAttribute="baseline" secondItem="bcD-CZ-z5H" secondAttribute="firstBaseline" id="4Xe-mi-YDm"/>
                                         <constraint firstItem="HWd-mO-ZEE" firstAttribute="top" secondItem="dtP-UX-7mt" secondAttribute="topMargin" id="72N-Ly-N9v"/>
                                         <constraint firstItem="bcD-CZ-z5H" firstAttribute="leading" secondItem="HWd-mO-ZEE" secondAttribute="trailing" constant="8" id="FWh-sx-CN2"/>
                                         <constraint firstItem="Ywg-68-oWw" firstAttribute="top" secondItem="bcD-CZ-z5H" secondAttribute="bottom" constant="8" id="Hph-Zs-Sa1"/>
@@ -54,11 +62,14 @@
                                         <constraint firstItem="Ywg-68-oWw" firstAttribute="leading" secondItem="HWd-mO-ZEE" secondAttribute="trailing" constant="8" id="TTS-iF-6aQ"/>
                                         <constraint firstItem="bcD-CZ-z5H" firstAttribute="top" secondItem="dtP-UX-7mt" secondAttribute="topMargin" constant="-5" id="cE2-0G-4da"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="HWd-mO-ZEE" secondAttribute="bottom" constant="16" id="dCd-fn-Jov"/>
+                                        <constraint firstItem="aQJ-F5-4pf" firstAttribute="leading" secondItem="bcD-CZ-z5H" secondAttribute="trailing" constant="49" id="dSI-bL-Dw4"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="aQJ-F5-4pf" secondAttribute="trailing" constant="-2" id="wJh-26-Y9c"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                 <connections>
                                     <outlet property="foodImage" destination="HWd-mO-ZEE" id="loE-CX-jG9"/>
+                                    <outlet property="mealID" destination="aQJ-F5-4pf" id="dYj-Bi-fDu"/>
                                     <outlet property="mealRating" destination="Ywg-68-oWw" id="F4O-md-W3E"/>
                                     <outlet property="nameLabel" destination="bcD-CZ-z5H" id="4xp-3V-TfW"/>
                                     <segue destination="BYZ-38-t0r" kind="show" identifier="ShowDetail" id="qM0-i3-fnL"/>
@@ -124,6 +135,14 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Eos-ca-6QU">
+                                <rect key="frame" x="557" y="72" width="37" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="37" id="eTX-KU-Y66"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
@@ -132,9 +151,11 @@
                             <constraint firstItem="paa-zJ-2H6" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="7H5-4f-m3e"/>
                             <constraint firstItem="yD2-iw-PLy" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="9lW-FA-c43"/>
                             <constraint firstItem="yD2-iw-PLy" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="CO2-8G-sTD"/>
+                            <constraint firstItem="Eos-ca-6QU" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" symbolic="YES" id="Dsf-KU-gug"/>
                             <constraint firstItem="paa-zJ-2H6" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="60" id="GwT-RS-WWe"/>
                             <constraint firstItem="yD2-iw-PLy" firstAttribute="top" secondItem="paa-zJ-2H6" secondAttribute="bottom" constant="50" id="Hzb-EY-2ff"/>
                             <constraint firstItem="2NF-Ng-oh7" firstAttribute="top" secondItem="yD2-iw-PLy" secondAttribute="bottom" constant="42" id="anA-3g-QvE"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Eos-ca-6QU" secondAttribute="trailing" constant="-14" id="rdv-cc-gVO"/>
                             <constraint firstItem="2NF-Ng-oh7" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="wHy-Wm-jOo"/>
                         </constraints>
                     </view>
@@ -156,6 +177,7 @@
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="cancel" destination="8AO-fr-Zgm" id="V7f-oi-qsk"/>
+                        <outlet property="mealID" destination="Eos-ca-6QU" id="iKc-31-PFU"/>
                         <outlet property="mealImage" destination="yD2-iw-PLy" id="ayt-B9-Cym"/>
                         <outlet property="mealtextField" destination="paa-zJ-2H6" id="umi-ef-kb1"/>
                         <outlet property="ratingClass" destination="2NF-Ng-oh7" id="6jO-KS-vWq"/>

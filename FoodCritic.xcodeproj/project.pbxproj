@@ -17,6 +17,14 @@
 		A50A302C1CD4636C00ED505F /* MealTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50A302B1CD4636C00ED505F /* MealTableViewCell.swift */; };
 		A50A302E1CD4651C00ED505F /* MealTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50A302D1CD4651C00ED505F /* MealTableViewController.swift */; };
 		A50A30301CD4656600ED505F /* RatingClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50A302F1CD4656600ED505F /* RatingClass.swift */; };
+		A53285B61CDE2CA80039349D /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A53285B51CDE2CA80039349D /* libsqlite3.dylib */; };
+		A53285C31CDE30020039349D /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = A53285BA1CDE30020039349D /* FMDatabase.m */; };
+		A53285C41CDE30020039349D /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = A53285BC1CDE30020039349D /* FMResultSet.m */; };
+		A53285C51CDE30020039349D /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = A53285BE1CDE30020039349D /* FMDatabaseQueue.m */; };
+		A53285C61CDE30020039349D /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = A53285C01CDE30020039349D /* FMDatabaseAdditions.m */; };
+		A53285C71CDE30020039349D /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = A53285C21CDE30020039349D /* FMDatabasePool.m */; };
+		A53285CB1CDE31160039349D /* MealDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53285CA1CDE31160039349D /* MealDataManager.swift */; };
+		A53285CD1CDEE1CB0039349D /* ActionResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53285CC1CDEE1CB0039349D /* ActionResponse.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +52,21 @@
 		A50A302B1CD4636C00ED505F /* MealTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MealTableViewCell.swift; sourceTree = "<group>"; };
 		A50A302D1CD4651C00ED505F /* MealTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MealTableViewController.swift; sourceTree = "<group>"; };
 		A50A302F1CD4656600ED505F /* RatingClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RatingClass.swift; sourceTree = "<group>"; };
+		A53285B51CDE2CA80039349D /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = ../../../../../../usr/lib/libsqlite3.dylib; sourceTree = "<group>"; };
+		A53285B71CDE30010039349D /* FoodCritic-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FoodCritic-Bridging-Header.h"; sourceTree = "<group>"; };
+		A53285B81CDE30020039349D /* FMDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMDB.h; path = ../../../../fmdb/src/fmdb/FMDB.h; sourceTree = "<group>"; };
+		A53285B91CDE30020039349D /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMDatabase.h; path = ../../../../fmdb/src/fmdb/FMDatabase.h; sourceTree = "<group>"; };
+		A53285BA1CDE30020039349D /* FMDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMDatabase.m; path = ../../../../fmdb/src/fmdb/FMDatabase.m; sourceTree = "<group>"; };
+		A53285BB1CDE30020039349D /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMResultSet.h; path = ../../../../fmdb/src/fmdb/FMResultSet.h; sourceTree = "<group>"; };
+		A53285BC1CDE30020039349D /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMResultSet.m; path = ../../../../fmdb/src/fmdb/FMResultSet.m; sourceTree = "<group>"; };
+		A53285BD1CDE30020039349D /* FMDatabaseQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMDatabaseQueue.h; path = ../../../../fmdb/src/fmdb/FMDatabaseQueue.h; sourceTree = "<group>"; };
+		A53285BE1CDE30020039349D /* FMDatabaseQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMDatabaseQueue.m; path = ../../../../fmdb/src/fmdb/FMDatabaseQueue.m; sourceTree = "<group>"; };
+		A53285BF1CDE30020039349D /* FMDatabaseAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMDatabaseAdditions.h; path = ../../../../fmdb/src/fmdb/FMDatabaseAdditions.h; sourceTree = "<group>"; };
+		A53285C01CDE30020039349D /* FMDatabaseAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMDatabaseAdditions.m; path = ../../../../fmdb/src/fmdb/FMDatabaseAdditions.m; sourceTree = "<group>"; };
+		A53285C11CDE30020039349D /* FMDatabasePool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMDatabasePool.h; path = ../../../../fmdb/src/fmdb/FMDatabasePool.h; sourceTree = "<group>"; };
+		A53285C21CDE30020039349D /* FMDatabasePool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMDatabasePool.m; path = ../../../../fmdb/src/fmdb/FMDatabasePool.m; sourceTree = "<group>"; };
+		A53285CA1CDE31160039349D /* MealDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MealDataManager.swift; path = ../MealDataManager.swift; sourceTree = "<group>"; };
+		A53285CC1CDEE1CB0039349D /* ActionResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionResponse.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,6 +74,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A53285B61CDE2CA80039349D /* libsqlite3.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -67,6 +91,7 @@
 		A50A2FFD1CD45CA400ED505F = {
 			isa = PBXGroup;
 			children = (
+				A53285B51CDE2CA80039349D /* libsqlite3.dylib */,
 				A50A30081CD45CA400ED505F /* FoodCritic */,
 				A50A301D1CD45CA500ED505F /* FoodCriticTests */,
 				A50A30071CD45CA400ED505F /* Products */,
@@ -85,9 +110,22 @@
 		A50A30081CD45CA400ED505F /* FoodCritic */ = {
 			isa = PBXGroup;
 			children = (
+				A53285B81CDE30020039349D /* FMDB.h */,
+				A53285B91CDE30020039349D /* FMDatabase.h */,
+				A53285BA1CDE30020039349D /* FMDatabase.m */,
+				A53285BB1CDE30020039349D /* FMResultSet.h */,
+				A53285BC1CDE30020039349D /* FMResultSet.m */,
+				A53285BD1CDE30020039349D /* FMDatabaseQueue.h */,
+				A53285BE1CDE30020039349D /* FMDatabaseQueue.m */,
+				A53285BF1CDE30020039349D /* FMDatabaseAdditions.h */,
+				A53285C01CDE30020039349D /* FMDatabaseAdditions.m */,
+				A53285C11CDE30020039349D /* FMDatabasePool.h */,
+				A53285C21CDE30020039349D /* FMDatabasePool.m */,
 				A50A30091CD45CA400ED505F /* AppDelegate.swift */,
 				A50A300B1CD45CA400ED505F /* ViewController.swift */,
 				A50A30291CD460CD00ED505F /* Meal.swift */,
+				A53285CA1CDE31160039349D /* MealDataManager.swift */,
+				A53285CC1CDEE1CB0039349D /* ActionResponse.swift */,
 				A50A302B1CD4636C00ED505F /* MealTableViewCell.swift */,
 				A50A300D1CD45CA400ED505F /* Main.storyboard */,
 				A50A302D1CD4651C00ED505F /* MealTableViewController.swift */,
@@ -95,6 +133,7 @@
 				A50A30101CD45CA400ED505F /* Assets.xcassets */,
 				A50A30121CD45CA400ED505F /* LaunchScreen.storyboard */,
 				A50A30151CD45CA400ED505F /* Info.plist */,
+				A53285B71CDE30010039349D /* FoodCritic-Bridging-Header.h */,
 			);
 			path = FoodCritic;
 			sourceTree = "<group>";
@@ -214,9 +253,16 @@
 				A50A302E1CD4651C00ED505F /* MealTableViewController.swift in Sources */,
 				A50A302C1CD4636C00ED505F /* MealTableViewCell.swift in Sources */,
 				A50A300C1CD45CA400ED505F /* ViewController.swift in Sources */,
+				A53285C31CDE30020039349D /* FMDatabase.m in Sources */,
 				A50A302A1CD460CD00ED505F /* Meal.swift in Sources */,
+				A53285C71CDE30020039349D /* FMDatabasePool.m in Sources */,
 				A50A300A1CD45CA400ED505F /* AppDelegate.swift in Sources */,
+				A53285C41CDE30020039349D /* FMResultSet.m in Sources */,
+				A53285CB1CDE31160039349D /* MealDataManager.swift in Sources */,
 				A50A30301CD4656600ED505F /* RatingClass.swift in Sources */,
+				A53285C51CDE30020039349D /* FMDatabaseQueue.m in Sources */,
+				A53285CD1CDEE1CB0039349D /* ActionResponse.swift in Sources */,
+				A53285C61CDE30020039349D /* FMDatabaseAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -345,11 +391,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = FoodCritic/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.FoodCritic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "FoodCritic/FoodCritic-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -357,11 +406,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = FoodCritic/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.FoodCritic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "FoodCritic/FoodCritic-Bridging-Header.h";
 			};
 			name = Release;
 		};
