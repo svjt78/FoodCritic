@@ -25,6 +25,8 @@
 		A53285C71CDE30020039349D /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = A53285C21CDE30020039349D /* FMDatabasePool.m */; };
 		A53285CB1CDE31160039349D /* MealDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53285CA1CDE31160039349D /* MealDataManager.swift */; };
 		A53285CD1CDEE1CB0039349D /* ActionResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53285CC1CDEE1CB0039349D /* ActionResponse.swift */; };
+		A580E8BA1CEEABA100BB5DDB /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A580E8B91CEEABA100BB5DDB /* CoreLocation.framework */; };
+		A580E8BE1CF15EBC00BB5DDB /* Restaurant.swift in Sources */ = {isa = PBXBuildFile; fileRef = A580E8BD1CF15EBC00BB5DDB /* Restaurant.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +69,8 @@
 		A53285C21CDE30020039349D /* FMDatabasePool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMDatabasePool.m; path = ../../../../fmdb/src/fmdb/FMDatabasePool.m; sourceTree = "<group>"; };
 		A53285CA1CDE31160039349D /* MealDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MealDataManager.swift; path = ../MealDataManager.swift; sourceTree = "<group>"; };
 		A53285CC1CDEE1CB0039349D /* ActionResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionResponse.swift; sourceTree = "<group>"; };
+		A580E8B91CEEABA100BB5DDB /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		A580E8BD1CF15EBC00BB5DDB /* Restaurant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Restaurant.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +78,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A580E8BA1CEEABA100BB5DDB /* CoreLocation.framework in Frameworks */,
 				A53285B61CDE2CA80039349D /* libsqlite3.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -91,6 +96,7 @@
 		A50A2FFD1CD45CA400ED505F = {
 			isa = PBXGroup;
 			children = (
+				A580E8B91CEEABA100BB5DDB /* CoreLocation.framework */,
 				A53285B51CDE2CA80039349D /* libsqlite3.dylib */,
 				A50A30081CD45CA400ED505F /* FoodCritic */,
 				A50A301D1CD45CA500ED505F /* FoodCriticTests */,
@@ -125,6 +131,7 @@
 				A50A300B1CD45CA400ED505F /* ViewController.swift */,
 				A50A30291CD460CD00ED505F /* Meal.swift */,
 				A53285CA1CDE31160039349D /* MealDataManager.swift */,
+				A580E8BD1CF15EBC00BB5DDB /* Restaurant.swift */,
 				A53285CC1CDEE1CB0039349D /* ActionResponse.swift */,
 				A50A302B1CD4636C00ED505F /* MealTableViewCell.swift */,
 				A50A300D1CD45CA400ED505F /* Main.storyboard */,
@@ -255,6 +262,7 @@
 				A50A300C1CD45CA400ED505F /* ViewController.swift in Sources */,
 				A53285C31CDE30020039349D /* FMDatabase.m in Sources */,
 				A50A302A1CD460CD00ED505F /* Meal.swift in Sources */,
+				A580E8BE1CF15EBC00BB5DDB /* Restaurant.swift in Sources */,
 				A53285C71CDE30020039349D /* FMDatabasePool.m in Sources */,
 				A50A300A1CD45CA400ED505F /* AppDelegate.swift in Sources */,
 				A53285C41CDE30020039349D /* FMResultSet.m in Sources */,

@@ -53,11 +53,19 @@ class MealDataManager  {
         }
         
         if mealDB!.open() {
-            let sql_stmt = "CREATE TABLE IF NOT EXISTS MEALS (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME TEXT, PHOTOPATH TEXT, RATING INT)"
+            
+            let sql_stmt = "CREATE TABLE IF NOT EXISTS MEALS (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME TEXT, PHOTOPATH TEXT, RATING INT, RESTNAME TEXT)"
             if !mealDB!.executeStatements(sql_stmt) {
                 print("Error: \(mealDB!.lastErrorMessage())")
             }
+            
+            let sql_stmt1 = "CREATE TABLE IF NOT EXISTS RESTAURANT (ID1 INTEGER PRIMARY KEY AUTOINCREMENT, STREET TEXT, CITY TEXT, STATE TEXT, ZIP TEXT)"
+            if !mealDB!.executeStatements(sql_stmt1) {
+                print("Error: \(mealDB!.lastErrorMessage())")
+            }
+            
             mealDB!.close()
+        
         } else {
             print("Error: \(mealDB!.lastErrorMessage())")
         }
@@ -86,10 +94,10 @@ class MealDataManager  {
                 // identify photo not saved
             }else{
   //              let insertSQL = "INSERT INTO MEALS (name, photopath, rating) VALUES ('\(meal.name)', '\(imagePath)', '\(meal.rating)')"
-                let insertSQL = "INSERT INTO MEALS (name, photopath, rating) VALUES (?, ?, ?)"
+                let insertSQL = "INSERT INTO MEALS (name, photopath, rating, restname) VALUES (?, ?, ?, ?)"
             
  //               let result = mealDB.executeUpdate(insertSQL, withArgumentsInArray: nil)
-                let result = mealDB.executeUpdate(insertSQL, withArgumentsInArray: [meal.name!, imagePath, meal.rating])
+                let result = mealDB.executeUpdate(insertSQL, withArgumentsInArray: [meal.name!, imagePath, meal.rating, meal.restName!])
             
                 if !result {
                     actionResponse = ActionResponse(responseCode: "Y", responseDesc: "Meal not saved successfully")!
@@ -159,9 +167,10 @@ class MealDataManager  {
                 let name = results_lab_test?.stringForColumn("NAME")
                 let imagepath = results_lab_test?.stringForColumn("PHOTOPATH")
                 let rating = results_lab_test?.longForColumn("RATING")
+                let restname = results_lab_test?.stringForColumn("RESTNAME")
                 
                 if let image: UIImage = loadImage(imagepath!) {
-                    let meal = Meal(mealID: mealID!, name :name!, photo: image, rating :rating!)
+                    let meal = Meal(mealID: mealID!, name :name!, photo: image, rating :rating!, restName: restname!)
                     mealArray.append(meal!)
 
                 }
@@ -169,7 +178,7 @@ class MealDataManager  {
                 }
             if mealArray.count == 0 {
                 let photo1 = UIImage(named: "thumb_IMG_1356_1024")!
-                let meal = Meal(mealID: 1, name: "Caprese Salad", photo: photo1, rating: 4)!
+                let meal = Meal(mealID: 1, name: "Caprese Salad", photo: photo1, rating: 4, restName: "Set by Default")!
                 mealArray.append(meal)
 
             }
@@ -236,7 +245,7 @@ class MealDataManager  {
                 filePath = fileInDocumentsDirectory(meal.name! + ".png")
                 saveImage(photo, path: filePath)
             }
-            let result = mealDB.executeUpdate("UPDATE MEALS SET NAME = ?, PHOTOPATH = ?, RATING = ? WHERE ID = ?", withArgumentsInArray: [meal.name!, filePath, meal.rating, meal.mealID])
+            let result = mealDB.executeUpdate("UPDATE MEALS SET NAME = ?, PHOTOPATH = ?, RATING = ?, RESTNAME = ? WHERE ID = ?", withArgumentsInArray: [meal.name!, filePath, meal.rating, meal.restName!, meal.mealID])
             
             if !result {
                 actionResponse = ActionResponse(responseCode: "Y", responseDesc: "Meal not saved successfully")!
@@ -318,8 +327,108 @@ func updateImage(filePath: String, photo: UIImage) {
         catch let error as NSError {
             print("Ooops! Something went wrong: \(error)")
         }
-
         
     }
+    
+    
+    func SaveRestaurantData(mealDB: FMDatabase, rest: Restaurant) -> ActionResponse {
+        
+        //        let mealDB = FMDatabase(path: databasePath.path!)
+        
+        var actionResponse = ActionResponse(responseCode: "n", responseDesc: "")
+        
+        if mealDB.open() {
+            
+            let rAddress = rest.rAddress!
+            let rCity = rest.rCity!
+            let rState = rest.rState!
+            let rZip = rest.rZip!
+            
+            let insertSQL1 = "INSERT INTO RESTAURANT (street, city, state, zip ) VALUES (?, ?, ?, ?)"
+            
+            let result = mealDB.executeUpdate(insertSQL1, withArgumentsInArray: [rest.rAddress!, rest.rCity!, rest.rState!, rest.rZip!])
+                
+                if !result {
+                    actionResponse = ActionResponse(responseCode: "Y", responseDesc: "Restaurant not saved successfully")!
+                    print("Error: \(mealDB.lastErrorMessage())")
+                } else {
+                    
+                    actionResponse = ActionResponse(responseCode: "n", responseDesc: "Success")!
+                    
+                }
+            
+        } else {
+            actionResponse = ActionResponse(responseCode: "Y", responseDesc: "Issue with opening database")!
+            print("Error: \(mealDB.lastErrorMessage())")
+        }
+        
+        return actionResponse!
+        
+    }
+
+
+    func loadRestaurantData(mealDB: FMDatabase, rID: Int) -> Restaurant {
+        
+        var restaurant: Restaurant = Restaurant(rID: rID, rAddress: "Not found", rCity: "Not found", rState: "Not found", rZip: "Not found")!
+        
+        if mealDB.open() {
+            
+            let results_lab_test:FMResultSet? = mealDB.executeQuery("SELECT * FROM RESTAURANT WHERE ID1 = ?", withArgumentsInArray: [rID])
+            
+            while results_lab_test?.next() == true {
+                
+                let id1 = results_lab_test?.longForColumn("ID1")
+                let address = results_lab_test?.stringForColumn("STREET")
+                let city = results_lab_test?.stringForColumn("CITY")
+                let state = results_lab_test?.stringForColumn("STATE")
+                let zip = results_lab_test?.stringForColumn("ZIP")
+                
+                
+                restaurant = Restaurant(rID: id1!, rAddress: address!, rCity: city!, rState: state!, rZip: zip!)!
+            }
+        }
+        
+        return restaurant
+    
+}
+
+    func deleteRestaurantData(mealDB: FMDatabase, rID: Int) -> ActionResponse
+    {
+        var actionResponse = ActionResponse(responseCode: "n", responseDesc: "")
+        if mealDB.open() {
+            
+            mealDB.executeUpdate("DELETE FROM RESTAURANT WHERE ID1 = ?", withArgumentsInArray: [rID])
+            
+            mealDB.close()
+            
+        } else {
+            actionResponse = ActionResponse(responseCode: "Y", responseDesc: "Restaurant is not deleted")!
+        }
+        return actionResponse!
+    }
+
+    func updateRestaurantData(mealDB: FMDatabase, rest: Restaurant) -> ActionResponse {
+        
+        var actionResponse = ActionResponse(responseCode: "n", responseDesc: "")
+        
+        if mealDB.open() {
+            
+            let result = mealDB.executeUpdate("UPDATE RESTAURANT SET STREET = ?, CITY = ?, STATE = ?, ZIP = ? WHERE ID1 = ?", withArgumentsInArray: [rest.rAddress!, rest.rCity!, rest.rState!, rest.rZip!, rest.rID!])
+                
+                if !result {
+                    actionResponse = ActionResponse(responseCode: "Y", responseDesc: "Location not saved successfully")!
+                    print("Error: \(mealDB.lastErrorMessage())")
+                } else {
+                    
+                    actionResponse = ActionResponse(responseCode: "n", responseDesc: "Success")!
+                    
+                }
+                
+                
+            }
+        
+        return actionResponse!
+    }
+
 
 }

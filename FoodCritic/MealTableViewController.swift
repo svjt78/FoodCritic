@@ -45,6 +45,19 @@ class MealTableViewController: UITableViewController {
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
         
+        // Change the navigation bar background color to blue.
+        navigationController!.navigationBar.barTintColor = UIColor.cyanColor()
+        
+        // Change the color of the navigation bar button items to white.
+        navigationController!.navigationBar.tintColor = UIColor.whiteColor()
+        
+        /*
+         // Change the color of the navigation bar title text to yellow.
+         navigationController!.navigationBar.titleTextAttributes =
+         [NSForegroundColorAttributeName: UIColor.yellowColor()]
+         */
+
+        
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         self.navigationItem.leftBarButtonItem = self.editButtonItem()
         

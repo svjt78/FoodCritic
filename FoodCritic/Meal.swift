@@ -15,12 +15,14 @@ class Meal: NSObject, NSCoding {
     var name: String?
     var photo: UIImage?
     var rating: Int
+    var restName: String?
     
     struct PropertyKey {
         static let IDKey = "ID"
         static let nameKey = "name"
         static let photoKey = "photo"
         static let ratingKey = "rating"
+        static let restNameKey = "rname"
     }
     
     // MARK: Archiving Paths
@@ -35,6 +37,7 @@ class Meal: NSObject, NSCoding {
         aCoder.encodeObject(name, forKey: PropertyKey.nameKey)
         aCoder.encodeObject(photo, forKey: PropertyKey.photoKey)
         aCoder.encodeInteger(rating, forKey: PropertyKey.ratingKey)
+        aCoder.encodeObject(restName, forKey: PropertyKey.restNameKey)
     }
     
     
@@ -50,19 +53,22 @@ class Meal: NSObject, NSCoding {
         
         let rating = aDecoder.decodeIntegerForKey(PropertyKey.ratingKey)
         
+        let restName = aDecoder.decodeObjectForKey(PropertyKey.restNameKey) as? String
+        
         // Must call designated initializer.
-        self.init(mealID: mealID, name: name, photo: photo, rating: rating)
+        self.init(mealID: mealID, name: name, photo: photo, rating: rating, restName: restName!)
     }
     
     
     // MARK: Initialization
     
-    init?(mealID: Int, name: String, photo: UIImage?, rating: Int) {
+    init?(mealID: Int, name: String, photo: UIImage?, rating: Int, restName: String) {
         // Initialize stored properties.
         self.mealID = mealID
         self.name = name
         self.photo = photo
         self.rating = rating
+        self.restName = restName
         
         super.init()
         

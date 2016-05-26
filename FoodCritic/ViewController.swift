@@ -7,9 +7,10 @@
 //
 
 import UIKit
+import CoreLocation
 
 
-class ViewController: UIViewController, UITableViewDelegate, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class ViewController: UIViewController, UITableViewDelegate, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate {
     
     // Mark properties
     //   @IBOutlet weak var mealLabel: UILabel!
@@ -30,6 +31,24 @@ class ViewController: UIViewController, UITableViewDelegate, UITextFieldDelegate
     @IBOutlet weak var ratingClass: RatingClass!
     
     var meal :Meal?
+    var restName: String?
+    
+    @IBOutlet weak var restaurantName: UITextField!
+    
+    @IBOutlet weak var restaurantAddress: UILabel!
+    
+    @IBOutlet weak var restaurantCity: UILabel!
+    
+    @IBOutlet weak var restaurantState: UILabel!
+    
+    @IBOutlet weak var restaurantZip: UILabel!
+    
+    var pm: CLPlacemark?
+    
+    var locManager: CLLocationManager?
+    
+    let locationManager = CLLocationManager()
+    
     
     /*
      @IBAction func buttonClicked(sender: AnyObject) { //Touch Up Inside action
@@ -54,12 +73,28 @@ class ViewController: UIViewController, UITableViewDelegate, UITextFieldDelegate
     //Mark View controller callback method
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        locationManager.delegate = self
+        
+        
         // Do any additional setup after loading the view, typically from a nib.
         //set up for delegate callbacks
         
         //      buttonShadow()
         
+        
+        // Change the navigation bar background color to blue.
+        navigationController!.navigationBar.barTintColor = UIColor.cyanColor()
+        
+        // Change the color of the navigation bar button items to white.
+        navigationController!.navigationBar.tintColor = UIColor.whiteColor()
+   /*
+        // Change the color of the navigation bar title text to yellow.
+        navigationController!.navigationBar.titleTextAttributes =
+            [NSForegroundColorAttributeName: UIColor.yellowColor()]
+       */
         mealtextField.delegate = self
+        restaurantName.delegate = self
         
         // Set up views if editing an existing Meal.
         if let meal = meal {
@@ -68,6 +103,18 @@ class ViewController: UIViewController, UITableViewDelegate, UITextFieldDelegate
             mealtextField.text   = meal.name
             mealImage.image = meal.photo
             ratingClass.rating = meal.rating
+            restaurantName.text = meal.restName
+            
+            
+            let mdm: MealDataManager = MealDataManager()
+            let rID = meal.mealID
+            let mealDB = mdm.MealDatabaseSetUp()
+            let restaurant: Restaurant = mdm.loadRestaurantData(mealDB, rID: rID)
+            
+            restaurantAddress.text = restaurant.rAddress
+            restaurantCity.text = restaurant.rCity
+            restaurantState.text = restaurant.rState
+            restaurantZip.text = restaurant.rZip
             
         }else{
         mealID.text = "1"
@@ -80,6 +127,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITextFieldDelegate
          } */
     }
     
+        
     //Mark text field delegates
     
     override func didReceiveMemoryWarning() {
@@ -97,8 +145,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITextFieldDelegate
     func textFieldDidBeginEditing(textField: UITextField) {
         //       doneButton.userInteractionEnabled = true
         // Disable the Save button while editing.
+        if textField == mealtextField {
         saveMeal.enabled = false
-        
+        }
     }
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
@@ -109,8 +158,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITextFieldDelegate
     
     func textFieldDidEndEditing(textField: UITextField) {
         //        mealLabel.text = textField.text
+        if textField == mealtextField {
         checkValidMealName()
         navigationItem.title = textField.text
+        }
     }
     
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool
@@ -123,6 +174,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITextFieldDelegate
         //       doneButton.userInteractionEnabled = true
         checkValidMealName()
         
+        if textField == mealtextField {
         //      saveMeal.enabled = true
         navigationItem.title = textField.text! + string
         
@@ -152,6 +204,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITextFieldDelegate
                     
                 }
             }
+        }
         }
         
         // always return true so that changes propagate
@@ -258,9 +311,34 @@ class ViewController: UIViewController, UITableViewDelegate, UITextFieldDelegate
             let photo = mealImage.image
             let rating = ratingClass.rating
             
+            let whitespaceSet = NSCharacterSet.whitespaceCharacterSet()
+            if restaurantName.text!.stringByTrimmingCharactersInSet(whitespaceSet) == "" {
+               restName = "Not found"
+            }else{
+                restName = restaurantName.text
+            }
             
             // Set the meal to be passed to MealTableViewController after the unwind segue.
-            meal = Meal(mealID:mealItemId, name: name, photo: photo, rating: rating)
+            meal = Meal(mealID:mealItemId, name: name, photo: photo, rating: rating, restName: restName!)
+  /*
+            //start concurrent thread to derive location
+            let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+            dispatch_async(queue) { () -> Void in
+                self.locationFinder(self.meal!, name: name)
+            }
+ */
+            //start concurrent thread to derive location
+            let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+            dispatch_async(queue) { () -> Void in
+                self.locationManager.delegate = self
+                self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
+                self.locationManager.requestWhenInUseAuthorization()
+                self.locationManager.distanceFilter=kCLDistanceFilterNone;
+                self.locationManager.startUpdatingLocation()
+                
+                
+            }
+
         }
         
     }
@@ -289,5 +367,90 @@ class ViewController: UIViewController, UITableViewDelegate, UITextFieldDelegate
         return true
     }
     
+    
+    func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
+        print("Error while updating location " + error.localizedDescription)
+    }
+    
+    
+    func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [CLLocation]) {
+
+            //--- CLGeocode to get address of current location ---//
+            CLGeocoder().reverseGeocodeLocation(manager.location!, completionHandler: {(placemarks, error)->Void in
+                
+                if (error != nil)
+                {
+                    print("Reverse geocoder failed with error" + error!.localizedDescription)
+                    return
+                }
+                
+                if placemarks!.count > 0
+                {
+                    let pm = placemarks![0] as CLPlacemark
+                    self.locManager = manager
+                    self.saveLocationInfo(self.locManager!, placemark: pm, meal: self.meal!, name: self.restName!)
+                    
+                }
+                else
+                {
+                    print("Problem with the data received from geocoder")
+                }
+            })
+            
+        }
+    
+    func saveLocationInfo(locationsManager: CLLocationManager, placemark: CLPlacemark?, meal: Meal, name: String?) {
+        
+        if let containsPlacemark = placemark
+        {
+            //stop updating location to save battery life
+            locationsManager.stopUpdatingLocation()
+            
+            let id = meal.mealID
+    //        var name = restaurantName.text
+   //         let whitespaceSet = NSCharacterSet.whitespaceCharacterSet()
+   //         if (name == nil) || (name!.stringByTrimmingCharactersInSet(whitespaceSet)) == "" {
+  //              if (name == " ") {
+  //              name = "Not found"
+  //          }
+            let street = (containsPlacemark.thoroughfare != nil) ? containsPlacemark.thoroughfare : "Not found"
+            let locality = (containsPlacemark.locality != nil) ? containsPlacemark.locality : "Not found"
+            let postalCode = (containsPlacemark.postalCode != nil) ? containsPlacemark.postalCode : "Not found"
+            let administrativeArea = (containsPlacemark.administrativeArea != nil) ? containsPlacemark.administrativeArea : "Not found"
+            let country = (containsPlacemark.country != nil) ? containsPlacemark.country : "Not found"
+            
+            print(street)
+            print(locality)
+            print(postalCode)
+            print(administrativeArea)
+ //           print(country)
+            
+            let rest = Restaurant(rID: id, rAddress: street, rCity: locality, rState: administrativeArea, rZip: postalCode)
+            
+            let mdm: MealDataManager =  MealDataManager()
+            let mealDB = mdm.MealDatabaseSetUp()
+            let response: ActionResponse = mdm.SaveRestaurantData(mealDB, rest: rest!)
+            
+            if (response.responseCode) == "Y" {
+                
+                let alertController = UIAlertController(title: "Alert!", message: response.responseDesc, preferredStyle: .Alert)
+                
+                let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+                alertController.addAction(defaultAction)
+                
+                let alertWindow = UIWindow(frame: UIScreen.mainScreen().bounds)
+                alertWindow.rootViewController = UIViewController()
+                alertWindow.windowLevel = UIWindowLevelAlert + 1;
+                alertWindow.makeKeyAndVisible()
+                
+                alertWindow.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
+            
+
+        }
+
+        
+    }
+    
 }
 
+}
