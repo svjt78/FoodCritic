@@ -10,18 +10,18 @@ import UIKit
 import CoreLocation
 
 
-class ViewController: UIViewController, UITableViewDelegate, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate {
+class ViewController: UIViewController, UITableViewDelegate, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     // Mark properties
     //   @IBOutlet weak var mealLabel: UILabel!
     
-    @IBOutlet weak var mealID: UITextField!
+    @IBOutlet weak var mealID: UILabel!
+    
     @IBOutlet weak var mealtextField: UITextField!
     
     //    @IBOutlet weak var defaultButton: UIButton!
     
     //    @IBOutlet weak var doneButton: UIButton!
-    
     @IBOutlet weak var mealImage: UIImageView!
     
     @IBOutlet weak var cancel: UIBarButtonItem!
@@ -43,12 +43,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITextFieldDelegate
     
     @IBOutlet weak var restaurantZip: UILabel!
     
-    var pm: CLPlacemark?
-    
-    var locManager: CLLocationManager?
-    
-    let locationManager = CLLocationManager()
-    
+    @IBOutlet weak var eventDate: UILabel!
+
     
     /*
      @IBAction func buttonClicked(sender: AnyObject) { //Touch Up Inside action
@@ -73,8 +69,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITextFieldDelegate
     //Mark View controller callback method
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        locationManager.delegate = self
         
         
         // Do any additional setup after loading the view, typically from a nib.
@@ -107,14 +101,26 @@ class ViewController: UIViewController, UITableViewDelegate, UITextFieldDelegate
             
             
             let mdm: MealDataManager = MealDataManager()
-            let rID = meal.mealID
+            let mID = meal.mealID
             let mealDB = mdm.MealDatabaseSetUp()
-            let restaurant: Restaurant = mdm.loadRestaurantData(mealDB, rID: rID)
+            let restaurant: Restaurant = mdm.loadRestaurantData(mealDB, mID: mID)
             
             restaurantAddress.text = restaurant.rAddress
             restaurantCity.text = restaurant.rCity
             restaurantState.text = restaurant.rState
             restaurantZip.text = restaurant.rZip
+            
+            let date = NSDate()
+            let calendar = NSCalendar.currentCalendar()
+ //           let components = calendar.components(.CalendarUnitHour | .CalendarUnitMinute | .CalendarUnitMonth | .CalendarUnitYear | .CalendarUnitDay, fromDate: date)
+            let components = calendar.components([.Hour, .Minute, .Month, .Year, .Day], fromDate: date)
+            let hour = components.hour
+            let minutes = components.minute
+            let month = components.month
+            let year = components.year
+            let day = components.day
+            
+            eventDate.text = String(month) + "/" + String(day) + "/" + String(year) + ", " + String(hour) + ":" + String(minutes)
             
         }else{
         mealID.text = "1"
@@ -232,7 +238,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITextFieldDelegate
     
     //Mark photo picker with gesture recognizer
     
+    
     @IBAction func touchMealPhoto(sender: UITapGestureRecognizer) {
+        
         // Hide the keyboard.
         mealtextField.resignFirstResponder()
         
@@ -246,6 +254,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITextFieldDelegate
         imagePickerController.delegate = self
         
         presentViewController(imagePickerController, animated: true, completion: nil)
+        
     }
     
     //Mark imagepicker delegates
@@ -319,26 +328,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITextFieldDelegate
             }
             
             // Set the meal to be passed to MealTableViewController after the unwind segue.
-            meal = Meal(mealID:mealItemId, name: name, photo: photo, rating: rating, restName: restName!)
-  /*
-            //start concurrent thread to derive location
-            let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
-            dispatch_async(queue) { () -> Void in
-                self.locationFinder(self.meal!, name: name)
-            }
- */
-            //start concurrent thread to derive location
-            let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
-            dispatch_async(queue) { () -> Void in
-                self.locationManager.delegate = self
-                self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
-                self.locationManager.requestWhenInUseAuthorization()
-                self.locationManager.distanceFilter=kCLDistanceFilterNone;
-                self.locationManager.startUpdatingLocation()
-                
-                
-            }
-
+            meal = Meal(mealID: mealItemId, name: name, photo: photo, rating: rating, restName: restName!)
+ 
         }
         
     }
@@ -367,90 +358,5 @@ class ViewController: UIViewController, UITableViewDelegate, UITextFieldDelegate
         return true
     }
     
-    
-    func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
-        print("Error while updating location " + error.localizedDescription)
-    }
-    
-    
-    func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [CLLocation]) {
-
-            //--- CLGeocode to get address of current location ---//
-            CLGeocoder().reverseGeocodeLocation(manager.location!, completionHandler: {(placemarks, error)->Void in
-                
-                if (error != nil)
-                {
-                    print("Reverse geocoder failed with error" + error!.localizedDescription)
-                    return
-                }
-                
-                if placemarks!.count > 0
-                {
-                    let pm = placemarks![0] as CLPlacemark
-                    self.locManager = manager
-                    self.saveLocationInfo(self.locManager!, placemark: pm, meal: self.meal!, name: self.restName!)
-                    
-                }
-                else
-                {
-                    print("Problem with the data received from geocoder")
-                }
-            })
-            
-        }
-    
-    func saveLocationInfo(locationsManager: CLLocationManager, placemark: CLPlacemark?, meal: Meal, name: String?) {
-        
-        if let containsPlacemark = placemark
-        {
-            //stop updating location to save battery life
-            locationsManager.stopUpdatingLocation()
-            
-            let id = meal.mealID
-    //        var name = restaurantName.text
-   //         let whitespaceSet = NSCharacterSet.whitespaceCharacterSet()
-   //         if (name == nil) || (name!.stringByTrimmingCharactersInSet(whitespaceSet)) == "" {
-  //              if (name == " ") {
-  //              name = "Not found"
-  //          }
-            let street = (containsPlacemark.thoroughfare != nil) ? containsPlacemark.thoroughfare : "Not found"
-            let locality = (containsPlacemark.locality != nil) ? containsPlacemark.locality : "Not found"
-            let postalCode = (containsPlacemark.postalCode != nil) ? containsPlacemark.postalCode : "Not found"
-            let administrativeArea = (containsPlacemark.administrativeArea != nil) ? containsPlacemark.administrativeArea : "Not found"
-            let country = (containsPlacemark.country != nil) ? containsPlacemark.country : "Not found"
-            
-            print(street)
-            print(locality)
-            print(postalCode)
-            print(administrativeArea)
- //           print(country)
-            
-            let rest = Restaurant(rID: id, rAddress: street, rCity: locality, rState: administrativeArea, rZip: postalCode)
-            
-            let mdm: MealDataManager =  MealDataManager()
-            let mealDB = mdm.MealDatabaseSetUp()
-            let response: ActionResponse = mdm.SaveRestaurantData(mealDB, rest: rest!)
-            
-            if (response.responseCode) == "Y" {
-                
-                let alertController = UIAlertController(title: "Alert!", message: response.responseDesc, preferredStyle: .Alert)
-                
-                let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
-                alertController.addAction(defaultAction)
-                
-                let alertWindow = UIWindow(frame: UIScreen.mainScreen().bounds)
-                alertWindow.rootViewController = UIViewController()
-                alertWindow.windowLevel = UIWindowLevelAlert + 1;
-                alertWindow.makeKeyAndVisible()
-                
-                alertWindow.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
-            
-
-        }
-
-        
-    }
-    
-}
 
 }

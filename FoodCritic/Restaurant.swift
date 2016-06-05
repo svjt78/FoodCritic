@@ -12,6 +12,7 @@ class Restaurant: NSObject, NSCoding {
     // MARK: Properties
     
     var rID: Int?
+    var mID: Int?
     var rAddress: String?
     var rCity: String?
     var rState: String?
@@ -19,6 +20,7 @@ class Restaurant: NSObject, NSCoding {
     
     struct PropertyKey {
         static let rIDKey = "ID"
+        static let mIDKey = "MID"
         static let rAddressKey = "ADDRESS"
         static let rCityKey = "CITY"
         static let rStateKey = "STATE"
@@ -35,6 +37,7 @@ class Restaurant: NSObject, NSCoding {
     
     func encodeWithCoder(aCoder: NSCoder) {
         aCoder.encodeObject(rID, forKey: PropertyKey.rIDKey)
+        aCoder.encodeObject(mID, forKey: PropertyKey.mIDKey)
         aCoder.encodeObject(rAddress, forKey: PropertyKey.rAddressKey)
         aCoder.encodeObject(rCity, forKey: PropertyKey.rCityKey)
         aCoder.encodeObject(rState, forKey: PropertyKey.rStateKey)
@@ -47,6 +50,8 @@ class Restaurant: NSObject, NSCoding {
         
         let rID = aDecoder.decodeObjectForKey(PropertyKey.rIDKey) as! Int
         
+        let mID = aDecoder.decodeObjectForKey(PropertyKey.mIDKey) as! Int
+        
         let rAddress = aDecoder.decodeObjectForKey(PropertyKey.rAddressKey) as! String
         
         let rCity = aDecoder.decodeObjectForKey(PropertyKey.rCityKey) as! String
@@ -56,15 +61,16 @@ class Restaurant: NSObject, NSCoding {
         let rZip = aDecoder.decodeObjectForKey(PropertyKey.rZipKey) as! String
         
         // Must call designated initializer.
-        self.init(rID: rID, rAddress: rAddress, rCity: rCity, rState: rState, rZip: rZip)
+        self.init(rID: rID, mID: mID, rAddress: rAddress, rCity: rCity, rState: rState, rZip: rZip)
     }
     
     
     // MARK: Initialization
     
-    init?(rID: Int, rAddress: String?, rCity: String?, rState: String?, rZip: String?) {
+    init?(rID: Int, mID: Int, rAddress: String?, rCity: String?, rState: String?, rZip: String?) {
         // Initialize stored properties.
         self.rID = rID
+        self.mID = mID
         self.rAddress = rAddress
         self.rCity = rCity
         self.rState = rState

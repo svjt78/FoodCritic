@@ -59,7 +59,7 @@ class MealDataManager  {
                 print("Error: \(mealDB!.lastErrorMessage())")
             }
             
-            let sql_stmt1 = "CREATE TABLE IF NOT EXISTS RESTAURANT (ID1 INTEGER PRIMARY KEY AUTOINCREMENT, STREET TEXT, CITY TEXT, STATE TEXT, ZIP TEXT)"
+            let sql_stmt1 = "CREATE TABLE IF NOT EXISTS RESTAURANT (ID1 INTEGER PRIMARY KEY AUTOINCREMENT, MEALID INTEGER, STREET TEXT, CITY TEXT, STATE TEXT, ZIP TEXT)"
             if !mealDB!.executeStatements(sql_stmt1) {
                 print("Error: \(mealDB!.lastErrorMessage())")
             }
@@ -86,7 +86,12 @@ class MealDataManager  {
         if mealDB.open() {
             
             let imagename: String = meal.name!
-            let image: UIImage = meal.photo!
+            var image: UIImage
+            if meal.photo == nil {
+                image = UIImage(named: "noimage")!
+            }else {
+                image = meal.photo!
+            }
             let imagePath = fileInDocumentsDirectory(imagename + ".png")
             if !saveImage(image, path: imagePath) {
                 actionResponse = ActionResponse(responseCode: "Y", responseDesc: "Photo not saved successfully")!
@@ -167,18 +172,20 @@ class MealDataManager  {
                 let name = results_lab_test?.stringForColumn("NAME")
                 let imagepath = results_lab_test?.stringForColumn("PHOTOPATH")
                 let rating = results_lab_test?.longForColumn("RATING")
-                let restname = results_lab_test?.stringForColumn("RESTNAME")
+                var restname = results_lab_test?.stringForColumn("RESTNAME")
+                if restname == nil {
+                    restname = " "
+                }
                 
-                if let image: UIImage = loadImage(imagepath!) {
+                    let image: UIImage? = loadImage(imagepath!)!
                     let meal = Meal(mealID: mealID!, name :name!, photo: image, rating :rating!, restName: restname!)
                     mealArray.append(meal!)
-
-                }
+                
                 
                 }
             if mealArray.count == 0 {
-                let photo1 = UIImage(named: "thumb_IMG_1356_1024")!
-                let meal = Meal(mealID: 1, name: "Caprese Salad", photo: photo1, rating: 4, restName: "Set by Default")!
+                let photo1 = UIImage(named: "noimage")!
+                let meal = Meal(mealID: 1, name: "Add new meal", photo: photo1, rating: 0, restName: "Not found")!
                 mealArray.append(meal)
 
             }
@@ -192,11 +199,14 @@ class MealDataManager  {
         
         func loadImage(path: String) -> UIImage? {
             
-            let image = UIImage(contentsOfFile: path)
+            var image: UIImage? = UIImage(contentsOfFile: path)
             
             if image == nil {
                 
                 print("missing image at: \(path)")
+                
+                    image = UIImage(named: "thumb_IMG_1356_1024")
+
             }
             print("Loading image from path: \(path)") // this is just for you to see the path in case you want to go to the directory, using Finder.
             return image
@@ -311,7 +321,9 @@ func updateImage(filePath: String, photo: UIImage) {
         let pngImageData = UIImagePNGRepresentation(photo)
         
         // Write new image
+    if pngImageData != nil {
         pngImageData!.writeToFile(filePath, atomically: true)
+    }
  /*
         // Save your stuff to
         NSUserDefaults.standardUserDefaults().setObject(stickerName, forKey: self.stickerUsed)
@@ -339,14 +351,16 @@ func updateImage(filePath: String, photo: UIImage) {
         
         if mealDB.open() {
             
+            let rID = rest.rID
+            let mID = rest.mID
             let rAddress = rest.rAddress!
             let rCity = rest.rCity!
             let rState = rest.rState!
             let rZip = rest.rZip!
             
-            let insertSQL1 = "INSERT INTO RESTAURANT (street, city, state, zip ) VALUES (?, ?, ?, ?)"
+            let insertSQL1 = "INSERT INTO RESTAURANT (mealid, street, city, state, zip ) VALUES (?, ?, ?, ?, ?)"
             
-            let result = mealDB.executeUpdate(insertSQL1, withArgumentsInArray: [rest.rAddress!, rest.rCity!, rest.rState!, rest.rZip!])
+            let result = mealDB.executeUpdate(insertSQL1, withArgumentsInArray: [rest.mID!, rest.rAddress!, rest.rCity!, rest.rState!, rest.rZip!])
                 
                 if !result {
                     actionResponse = ActionResponse(responseCode: "Y", responseDesc: "Restaurant not saved successfully")!
@@ -367,24 +381,25 @@ func updateImage(filePath: String, photo: UIImage) {
     }
 
 
-    func loadRestaurantData(mealDB: FMDatabase, rID: Int) -> Restaurant {
+    func loadRestaurantData(mealDB: FMDatabase, mID: Int) -> Restaurant {
         
-        var restaurant: Restaurant = Restaurant(rID: rID, rAddress: "Not found", rCity: "Not found", rState: "Not found", rZip: "Not found")!
+        var restaurant: Restaurant = Restaurant(rID: 1, mID: mID, rAddress: "Not found", rCity: "Not found", rState: "Not found", rZip: "Not found")!
         
         if mealDB.open() {
             
-            let results_lab_test:FMResultSet? = mealDB.executeQuery("SELECT * FROM RESTAURANT WHERE ID1 = ?", withArgumentsInArray: [rID])
+            let results_lab_test:FMResultSet? = mealDB.executeQuery("SELECT * FROM RESTAURANT WHERE MEALID = ?", withArgumentsInArray: [mID])
             
             while results_lab_test?.next() == true {
                 
                 let id1 = results_lab_test?.longForColumn("ID1")
+                let mid = results_lab_test?.longForColumn("MEALID")
                 let address = results_lab_test?.stringForColumn("STREET")
                 let city = results_lab_test?.stringForColumn("CITY")
                 let state = results_lab_test?.stringForColumn("STATE")
                 let zip = results_lab_test?.stringForColumn("ZIP")
                 
                 
-                restaurant = Restaurant(rID: id1!, rAddress: address!, rCity: city!, rState: state!, rZip: zip!)!
+                restaurant = Restaurant(rID: id1!, mID: mid!, rAddress: address!, rCity: city!, rState: state!, rZip: zip!)!
             }
         }
         
@@ -392,12 +407,12 @@ func updateImage(filePath: String, photo: UIImage) {
     
 }
 
-    func deleteRestaurantData(mealDB: FMDatabase, rID: Int) -> ActionResponse
+    func deleteRestaurantData(mealDB: FMDatabase, mID: Int) -> ActionResponse
     {
         var actionResponse = ActionResponse(responseCode: "n", responseDesc: "")
         if mealDB.open() {
             
-            mealDB.executeUpdate("DELETE FROM RESTAURANT WHERE ID1 = ?", withArgumentsInArray: [rID])
+            mealDB.executeUpdate("DELETE FROM RESTAURANT WHERE MEALID = ?", withArgumentsInArray: [mID])
             
             mealDB.close()
             
@@ -413,7 +428,7 @@ func updateImage(filePath: String, photo: UIImage) {
         
         if mealDB.open() {
             
-            let result = mealDB.executeUpdate("UPDATE RESTAURANT SET STREET = ?, CITY = ?, STATE = ?, ZIP = ? WHERE ID1 = ?", withArgumentsInArray: [rest.rAddress!, rest.rCity!, rest.rState!, rest.rZip!, rest.rID!])
+            let result = mealDB.executeUpdate("UPDATE RESTAURANT SET STREET = ?, CITY = ?, STATE = ?, ZIP = ? WHERE MEALID = ?", withArgumentsInArray: [rest.rAddress!, rest.rCity!, rest.rState!, rest.rZip!, rest.mID!])
                 
                 if !result {
                     actionResponse = ActionResponse(responseCode: "Y", responseDesc: "Location not saved successfully")!
@@ -428,6 +443,25 @@ func updateImage(filePath: String, photo: UIImage) {
             }
         
         return actionResponse!
+    }
+    
+    func justsavedMealID(mealDB: FMDatabase) -> Int {
+        
+        var mlID: Int = 1
+        
+        if mealDB.open() {
+            
+            let results_lab_test:FMResultSet? = mealDB.executeQuery("SELECT * FROM MEALS ORDER BY ID DESC LIMIT 1", withArgumentsInArray: nil)
+            
+            while results_lab_test?.next() == true {
+                
+                mlID = (results_lab_test?.longForColumn("ID"))!
+                
+            }
+        }
+
+        
+        return mlID
     }
 
 

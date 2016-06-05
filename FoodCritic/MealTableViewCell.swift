@@ -13,7 +13,7 @@ class MealTableViewCell: UITableViewCell {
     //Mark properties
     
     
-    @IBOutlet weak var mealID: UITextField!
+    @IBOutlet weak var mealID: UILabel!
     
     @IBOutlet weak var nameLabel: UILabel!
     

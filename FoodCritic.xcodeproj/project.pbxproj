@@ -17,6 +17,7 @@
 		A50A302C1CD4636C00ED505F /* MealTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50A302B1CD4636C00ED505F /* MealTableViewCell.swift */; };
 		A50A302E1CD4651C00ED505F /* MealTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50A302D1CD4651C00ED505F /* MealTableViewController.swift */; };
 		A50A30301CD4656600ED505F /* RatingClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50A302F1CD4656600ED505F /* RatingClass.swift */; };
+		A51096971CF95DBE00903CD5 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51096961CF95DBE00903CD5 /* Reachability.swift */; };
 		A53285B61CDE2CA80039349D /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A53285B51CDE2CA80039349D /* libsqlite3.dylib */; };
 		A53285C31CDE30020039349D /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = A53285BA1CDE30020039349D /* FMDatabase.m */; };
 		A53285C41CDE30020039349D /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = A53285BC1CDE30020039349D /* FMResultSet.m */; };
@@ -54,6 +55,7 @@
 		A50A302B1CD4636C00ED505F /* MealTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MealTableViewCell.swift; sourceTree = "<group>"; };
 		A50A302D1CD4651C00ED505F /* MealTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MealTableViewController.swift; sourceTree = "<group>"; };
 		A50A302F1CD4656600ED505F /* RatingClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RatingClass.swift; sourceTree = "<group>"; };
+		A51096961CF95DBE00903CD5 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		A53285B51CDE2CA80039349D /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = ../../../../../../usr/lib/libsqlite3.dylib; sourceTree = "<group>"; };
 		A53285B71CDE30010039349D /* FoodCritic-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FoodCritic-Bridging-Header.h"; sourceTree = "<group>"; };
 		A53285B81CDE30020039349D /* FMDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMDB.h; path = ../../../../fmdb/src/fmdb/FMDB.h; sourceTree = "<group>"; };
@@ -136,6 +138,7 @@
 				A50A302B1CD4636C00ED505F /* MealTableViewCell.swift */,
 				A50A300D1CD45CA400ED505F /* Main.storyboard */,
 				A50A302D1CD4651C00ED505F /* MealTableViewController.swift */,
+				A51096961CF95DBE00903CD5 /* Reachability.swift */,
 				A50A302F1CD4656600ED505F /* RatingClass.swift */,
 				A50A30101CD45CA400ED505F /* Assets.xcassets */,
 				A50A30121CD45CA400ED505F /* LaunchScreen.storyboard */,
@@ -270,6 +273,7 @@
 				A50A30301CD4656600ED505F /* RatingClass.swift in Sources */,
 				A53285C51CDE30020039349D /* FMDatabaseQueue.m in Sources */,
 				A53285CD1CDEE1CB0039349D /* ActionResponse.swift in Sources */,
+				A51096971CF95DBE00903CD5 /* Reachability.swift in Sources */,
 				A53285C61CDE30020039349D /* FMDatabaseAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

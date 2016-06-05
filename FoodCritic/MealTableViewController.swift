@@ -1,15 +1,17 @@
 //
 //  MealTableViewController.swift
 //  FoodTracker
+
 //
 //  Created by Suvojit Dutta on 4/10/16.
 //  Copyright © 2016 Suvojit Dutta. All rights reserved.
 //
 
 import UIKit
+import CoreLocation
 
 
-class MealTableViewController: UITableViewController {
+class MealTableViewController: UITableViewController, CLLocationManagerDelegate {
     
     //Mark properties
     
@@ -17,7 +19,16 @@ class MealTableViewController: UITableViewController {
     
     var mealDB: FMDatabase = FMDatabase()
     
+    let photo1 = UIImage(named: "thumb_IMG_1356_1024")!
+    var meal: Meal = Meal(mealID: 1, name: "Unknown", photo: (photo: UIImage(named: "thumb_IMG_1356_1024")!), rating: 3, restName: "Unknown")!
+
     var currentSelection: Int = 0
+    
+    var pm: CLPlacemark?
+    
+    var locManager: CLLocationManager?
+    
+    let locationManager = CLLocationManager()
     //   self.property (nonatomic) currentSelection;
     
         // MARK: Initialization
@@ -68,6 +79,8 @@ class MealTableViewController: UITableViewController {
         
         //sentinel
         self.currentSelection = -1;
+        
+        locationManager.delegate = self
         
         let mdm: MealDataManager =  MealDataManager()
          mealDB = mdm.MealDatabaseSetUp()
@@ -189,7 +202,9 @@ class MealTableViewController: UITableViewController {
     }
     
     @IBAction func unwindToMealList(sender: UIStoryboardSegue) {
-        if let sourceViewController = sender.sourceViewController as? ViewController, meal = sourceViewController.meal {
+        if let sourceViewController = sender.sourceViewController as? ViewController, meal1 = sourceViewController.meal {
+            
+            meal = meal1
             
             if let selectedIndexPath = tableView.indexPathForSelectedRow {
            // Update an existing meal.
@@ -238,6 +253,33 @@ class MealTableViewController: UITableViewController {
                     
                     
                 }else {
+                        //check for internet connection 
+                    
+                    if Reachability.isConnectedToNetwork() == true {
+                            //start concurrent thread to derive location
+                        let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+                        dispatch_async(queue) { () -> Void in
+                            self.locationManager.delegate = self
+                            self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
+                            self.locationManager.requestWhenInUseAuthorization()
+                            self.locationManager.distanceFilter=kCLDistanceFilterNone;
+                            self.locationManager.startUpdatingLocation()
+                        }
+                    } else {
+                        let alertController = UIAlertController(title: "Alert!", message: "Device is not connected to Internet", preferredStyle: .Alert)
+                        
+                        let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+                        alertController.addAction(defaultAction)
+                        
+                        let alertWindow = UIWindow(frame: UIScreen.mainScreen().bounds)
+                        alertWindow.rootViewController = UIViewController()
+                        alertWindow.windowLevel = UIWindowLevelAlert + 1;
+                        alertWindow.makeKeyAndVisible()
+                        
+                        alertWindow.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
+
+                    }
+
                    meals = mdm.loadMealData(mealDB)
                     
                 }
@@ -299,12 +341,33 @@ class MealTableViewController: UITableViewController {
                 
                 alertWindow.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
             
-                
             }else {
+                //delete location info for deleted meal
+                let mdm: MealDataManager =  MealDataManager()
+                let mealDB = mdm.MealDatabaseSetUp()
+                let mID = mealItem.mealID
+                let response: ActionResponse = mdm.deleteRestaurantData(mealDB, mID: mID)
+                
+                if (response.responseCode) == "y" {
+                    
+                    let alertController = UIAlertController(title: "Alert!", message: "Restaurant reference is not deleted", preferredStyle: .Alert)
+                    
+                    let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+                    alertController.addAction(defaultAction)
+                    
+                    let alertWindow = UIWindow(frame: UIScreen.mainScreen().bounds)
+                    alertWindow.rootViewController = UIViewController()
+                    alertWindow.windowLevel = UIWindowLevelAlert + 1;
+                    alertWindow.makeKeyAndVisible()
+                    
+                    alertWindow.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
+                }else {
+                
+                //refresh table view
                 meals.removeAtIndex(indexPath.row)
                 tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
                 meals = mdm.loadMealData(mealDB)
-                
+                }
             }
 
  /*
@@ -356,6 +419,94 @@ class MealTableViewController: UITableViewController {
     
     func loadMeals() -> [Meal]? {
         return NSKeyedUnarchiver.unarchiveObjectWithFile(Meal.ArchiveURL.path!) as? [Meal]
+    }
+    
+    func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
+        print("Error while updating location " + error.localizedDescription)
+    }
+    
+    
+    func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [CLLocation]) {
+        
+        //stop updating location to save battery life
+        locationManager.stopUpdatingLocation()
+
+        
+        //--- CLGeocode to get address of current location ---//
+        CLGeocoder().reverseGeocodeLocation(manager.location!, completionHandler: {(placemarks, error)->Void in
+            
+            if (error != nil)
+            {
+                print("Reverse geocoder failed with error" + error!.localizedDescription)
+                return
+            }
+            
+            if placemarks!.count > 0
+            {
+                let pm = placemarks![0] as CLPlacemark
+                self.locManager = manager
+                self.saveLocationInfo(pm, meal: self.meal)
+                
+            }
+            else
+            {
+                print("Problem with the data received from geocoder")
+            }
+        })
+        
+    }
+    
+    func saveLocationInfo(placemark: CLPlacemark?, meal: Meal) {
+        
+        if let containsPlacemark = placemark
+        {
+            //get the mealID just saved
+            let mdm: MealDataManager =  MealDataManager()
+            let mealDB = mdm.MealDatabaseSetUp()
+            let id: Int = mdm.justsavedMealID(mealDB)
+            
+            //get address compoents from geocoder
+            let street = (containsPlacemark.thoroughfare != nil) ? containsPlacemark.thoroughfare : "Not found"
+            let locality = (containsPlacemark.locality != nil) ? containsPlacemark.locality : "Not found"
+            let postalCode = (containsPlacemark.postalCode != nil) ? containsPlacemark.postalCode : "Not found"
+            let administrativeArea = (containsPlacemark.administrativeArea != nil) ? containsPlacemark.administrativeArea : "Not found"
+            let country = (containsPlacemark.country != nil) ? containsPlacemark.country : "Not found"
+            
+            print(street)
+            print(locality)
+            print(postalCode)
+            print(administrativeArea)
+            //           print(country)
+            
+            //create restaurant object
+            let rest = Restaurant(rID: 1, mID: id, rAddress: street, rCity: locality, rState: administrativeArea, rZip: postalCode)
+            
+//            let mdm: MealDataManager =  MealDataManager()
+//            let mealDB = mdm.MealDatabaseSetUp()
+            
+            //save restaurant object and handle any error
+            let response: ActionResponse = mdm.SaveRestaurantData(mealDB, rest: rest!)
+            
+            if (response.responseCode) == "Y" {
+                
+                let alertController = UIAlertController(title: "Alert!", message: response.responseDesc, preferredStyle: .Alert)
+                
+                let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+                alertController.addAction(defaultAction)
+                
+                let alertWindow = UIWindow(frame: UIScreen.mainScreen().bounds)
+                alertWindow.rootViewController = UIViewController()
+                alertWindow.windowLevel = UIWindowLevelAlert + 1;
+                alertWindow.makeKeyAndVisible()
+                
+                alertWindow.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
+                
+                
+            }
+            
+            
+        }
+        
     }
     
 }
