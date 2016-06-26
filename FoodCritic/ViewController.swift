@@ -91,6 +91,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITextFieldDelegate
         restaurantName.delegate = self
         
         // Set up views if editing an existing Meal.
+        mealID.hidden = true
         if let meal = meal {
             mealID.text = String(meal.mealID)
             navigationItem.title = meal.name
@@ -109,18 +110,29 @@ class ViewController: UIViewController, UITableViewDelegate, UITextFieldDelegate
             restaurantCity.text = restaurant.rCity
             restaurantState.text = restaurant.rState
             restaurantZip.text = restaurant.rZip
+            eventDate.text = restaurant.rDate
             
-            let date = NSDate()
-            let calendar = NSCalendar.currentCalendar()
- //           let components = calendar.components(.CalendarUnitHour | .CalendarUnitMinute | .CalendarUnitMonth | .CalendarUnitYear | .CalendarUnitDay, fromDate: date)
-            let components = calendar.components([.Hour, .Minute, .Month, .Year, .Day], fromDate: date)
-            let hour = components.hour
-            let minutes = components.minute
-            let month = components.month
-            let year = components.year
-            let day = components.day
+            if restaurantAddress.text == "Not found" {
+                restaurantAddress.hidden = true
+            }
             
-            eventDate.text = String(month) + "/" + String(day) + "/" + String(year) + ", " + String(hour) + ":" + String(minutes)
+            if restaurantCity.text == "Not found" {
+                restaurantCity.hidden = true
+            }
+            
+            if restaurantState.text == "Not found" {
+                restaurantState.hidden = true
+            }
+
+            if restaurantZip.text == "Not found" {
+                restaurantZip.hidden = true
+            }
+            
+            if eventDate.text == "Not found" {
+                eventDate.hidden = true
+            }
+
+
             
         }else{
         mealID.text = "1"

@@ -158,6 +158,7 @@ class MealTableViewController: UITableViewController, CLLocationManagerDelegate 
         let meal = meals[indexPath.row]
         
         cell.mealID.text = String(meal.mealID)
+        cell.mealID.hidden = true
         cell.nameLabel.text = meal.name
         cell.foodImage.image = meal.photo
         cell.mealRating.rating = meal.rating
@@ -478,8 +479,21 @@ class MealTableViewController: UITableViewController, CLLocationManagerDelegate 
             print(administrativeArea)
             //           print(country)
             
+            //get event date and time 
+            let date = NSDate()
+            let calendar = NSCalendar.currentCalendar()
+            //           let components = calendar.components(.CalendarUnitHour | .CalendarUnitMinute | .CalendarUnitMonth | .CalendarUnitYear | .CalendarUnitDay, fromDate: date)
+            let components = calendar.components([.Hour, .Minute, .Month, .Year, .Day], fromDate: date)
+            let hour = components.hour
+            let minutes = components.minute
+            let month = components.month
+            let year = components.year
+            let day = components.day
+            
+            let mealDate = String(month) + "/" + String(day) + "/" + String(year) + ", " + String(hour) + ":" + String(minutes)
+            
             //create restaurant object
-            let rest = Restaurant(rID: 1, mID: id, rAddress: street, rCity: locality, rState: administrativeArea, rZip: postalCode)
+            let rest = Restaurant(rID: 1, mID: id, rAddress: street, rCity: locality, rState: administrativeArea, rZip: postalCode, rDate: mealDate)
             
 //            let mdm: MealDataManager =  MealDataManager()
 //            let mealDB = mdm.MealDatabaseSetUp()

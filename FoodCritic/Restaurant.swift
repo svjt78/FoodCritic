@@ -17,6 +17,7 @@ class Restaurant: NSObject, NSCoding {
     var rCity: String?
     var rState: String?
     var rZip: String?
+    var rDate: String?
     
     struct PropertyKey {
         static let rIDKey = "ID"
@@ -25,6 +26,7 @@ class Restaurant: NSObject, NSCoding {
         static let rCityKey = "CITY"
         static let rStateKey = "STATE"
         static let rZipKey = "ZIP"
+        static let rDateKey = "DATE"
         
     }
     
@@ -42,6 +44,7 @@ class Restaurant: NSObject, NSCoding {
         aCoder.encodeObject(rCity, forKey: PropertyKey.rCityKey)
         aCoder.encodeObject(rState, forKey: PropertyKey.rStateKey)
         aCoder.encodeObject(rZip, forKey: PropertyKey.rZipKey)
+        aCoder.encodeObject(rDate, forKey: PropertyKey.rDateKey)
     }
     
     
@@ -60,14 +63,16 @@ class Restaurant: NSObject, NSCoding {
         
         let rZip = aDecoder.decodeObjectForKey(PropertyKey.rZipKey) as! String
         
+        let rDate = aDecoder.decodeObjectForKey(PropertyKey.rDateKey) as! String
+        
         // Must call designated initializer.
-        self.init(rID: rID, mID: mID, rAddress: rAddress, rCity: rCity, rState: rState, rZip: rZip)
+        self.init(rID: rID, mID: mID, rAddress: rAddress, rCity: rCity, rState: rState, rZip: rZip, rDate: rDate)
     }
     
     
     // MARK: Initialization
     
-    init?(rID: Int, mID: Int, rAddress: String?, rCity: String?, rState: String?, rZip: String?) {
+    init?(rID: Int, mID: Int, rAddress: String?, rCity: String?, rState: String?, rZip: String?, rDate: String) {
         // Initialize stored properties.
         self.rID = rID
         self.mID = mID
@@ -75,6 +80,7 @@ class Restaurant: NSObject, NSCoding {
         self.rCity = rCity
         self.rState = rState
         self.rZip = rZip
+        self.rDate = rDate
         
         super.init()
         

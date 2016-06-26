@@ -59,7 +59,7 @@ class MealDataManager  {
                 print("Error: \(mealDB!.lastErrorMessage())")
             }
             
-            let sql_stmt1 = "CREATE TABLE IF NOT EXISTS RESTAURANT (ID1 INTEGER PRIMARY KEY AUTOINCREMENT, MEALID INTEGER, STREET TEXT, CITY TEXT, STATE TEXT, ZIP TEXT)"
+            let sql_stmt1 = "CREATE TABLE IF NOT EXISTS RESTAURANT (ID1 INTEGER PRIMARY KEY AUTOINCREMENT, MEALID INTEGER, STREET TEXT, CITY TEXT, STATE TEXT, ZIP TEXT, DATE TEXT)"
             if !mealDB!.executeStatements(sql_stmt1) {
                 print("Error: \(mealDB!.lastErrorMessage())")
             }
@@ -205,7 +205,7 @@ class MealDataManager  {
                 
                 print("missing image at: \(path)")
                 
-                    image = UIImage(named: "thumb_IMG_1356_1024")
+                    image = UIImage(named: "noimage")
 
             }
             print("Loading image from path: \(path)") // this is just for you to see the path in case you want to go to the directory, using Finder.
@@ -308,7 +308,10 @@ func updateImage(filePath: String, photo: UIImage) {
     // Delete 'hello.swift' file
     
     do {
+        let pngImageData1 = UIImagePNGRepresentation(photo)
+        if pngImageData1 != nil {
         try fileManager.removeItemAtPath(filePath)
+        }
     }
     catch let error as NSError {
         print("Ooops! Something went wrong: \(error)")
@@ -357,10 +360,11 @@ func updateImage(filePath: String, photo: UIImage) {
             let rCity = rest.rCity!
             let rState = rest.rState!
             let rZip = rest.rZip!
+            let rDate = rest.rDate!
             
-            let insertSQL1 = "INSERT INTO RESTAURANT (mealid, street, city, state, zip ) VALUES (?, ?, ?, ?, ?)"
+            let insertSQL1 = "INSERT INTO RESTAURANT (mealid, street, city, state, zip, date ) VALUES (?, ?, ?, ?, ?, ?)"
             
-            let result = mealDB.executeUpdate(insertSQL1, withArgumentsInArray: [rest.mID!, rest.rAddress!, rest.rCity!, rest.rState!, rest.rZip!])
+            let result = mealDB.executeUpdate(insertSQL1, withArgumentsInArray: [rest.mID!, rest.rAddress!, rest.rCity!, rest.rState!, rest.rZip!, rest.rDate!])
                 
                 if !result {
                     actionResponse = ActionResponse(responseCode: "Y", responseDesc: "Restaurant not saved successfully")!
@@ -383,7 +387,7 @@ func updateImage(filePath: String, photo: UIImage) {
 
     func loadRestaurantData(mealDB: FMDatabase, mID: Int) -> Restaurant {
         
-        var restaurant: Restaurant = Restaurant(rID: 1, mID: mID, rAddress: "Not found", rCity: "Not found", rState: "Not found", rZip: "Not found")!
+        var restaurant: Restaurant = Restaurant(rID: 1, mID: mID, rAddress: "Not found", rCity: "Not found", rState: "Not found", rZip: "Not found", rDate: "Not found")!
         
         if mealDB.open() {
             
@@ -397,9 +401,9 @@ func updateImage(filePath: String, photo: UIImage) {
                 let city = results_lab_test?.stringForColumn("CITY")
                 let state = results_lab_test?.stringForColumn("STATE")
                 let zip = results_lab_test?.stringForColumn("ZIP")
+                let date = results_lab_test?.stringForColumn("DATE")
                 
-                
-                restaurant = Restaurant(rID: id1!, mID: mid!, rAddress: address!, rCity: city!, rState: state!, rZip: zip!)!
+                restaurant = Restaurant(rID: id1!, mID: mid!, rAddress: address!, rCity: city!, rState: state!, rZip: zip!, rDate: date!)!
             }
         }
         
